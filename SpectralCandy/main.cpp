@@ -1,51 +1,68 @@
+// https://github.com/zyfu0000/lameHelper/blob/master/Windows/lameHelper.cpp
+// http://www.cplusplus.com/forum/windows/210933/
+
 #include <Windows.h>
 #include <string>
 #include <iostream>
 #include <fstream>
 
-#include <lame/lame.h>
+#include <mpg123.h>
 
-class mp3RawFile {
+class mp3ToPCM {
 private:
 	char *buf;
 
-	lame_t lame;
+	
 
 public:
 	std::string filename;
 	
-	mp3RawFile(std::string filename) :
+	mp3ToPCM(std::string filename) :
 		filename(filename)
 	{
 
 	}
 
+	// //http://www.cplusplus.com/forum/windows/210933/
 	int loadFile()
 	{
+
 		buf = new char(filesize(filename.c_str()));
 
-		lame = lame_init();
-		lame_set_in_samplerate(lame, 44100);
-		lame_set_VBR(lame, vbr_default);
-		lame_init_params(lame);
+		mpg123_init();
 
-		FILE* mp3 = fopen(filename.c_str(), "rb");
-		if (mp3 == NULL) {
-			panic("Failed to read file: " + filename);
+		int err;
+		mpg123_handle *mh = mpg123_new(NULL, &err);
+		size_t buffer_size = mpg123_outblock(mh);
+		unsigned char* buffer = new unsigned char(buffer_size * sizeof(char));
+
+		mpg123_open(mh, filename.c_str());
+
+		int channels, encoding;
+		long rate;
+		mpg123_getformat(mh, &rate, &channels, &encoding);
+
+		int m_bits = mpg123_encsize(encoding);
+		int m_rate = rate;
+		int m_channels = channels;
+
+		size_t done;
+		for (int totalBtyes = 0; mpg123_read(mh, buffer, buffer_size, &done) == MPG123_OK; )
+		{
+			char* data = new char[done + 1];
+			for (int i = 0; i != done; i++)
+			{
+				char tst = static_cast<char>(buffer[i]);
+			}
+
+			totalBtyes += done;
 		}
 
-		do {
-			read = fread(pcm_buffer, 2 * sizeof(short int), PCM_SIZE, pcm);
-			if (read == 0)
-				write = lame_encode_flush(lame, mp3_buffer, MP3_SIZE);
-			else
-				write = lame_encode_buffer_interleaved(lame, pcm_buffer, read, mp3_buffer, MP3_SIZE);
-			fwrite(mp3_buffer, write, 1, mp3);
-		} while (read != 0);
+		mpg123_close(mh);
+		mpg123_delete(mh);
+		mpg123_exit();
 
-		lame_close(lame);
-
-
+		return 0;
 	}
 
 private:
@@ -58,6 +75,11 @@ private:
 
 int main(void)
 {
+	mp3ToPCM rawPCM{ "test.mp3" };
+	if (rawPCM.loadFile()) {
+		std::cout << "[!] Failed to decode into PCM" << std::endl;
+		return -1;
+	}
 
 
 	return 0;
