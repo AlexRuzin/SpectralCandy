@@ -1,84 +1,34 @@
 // https://github.com/zyfu0000/lameHelper/blob/master/Windows/lameHelper.cpp
 // http://www.cplusplus.com/forum/windows/210933/
+// https://rodic.fr/blog/libavcodec-tutorial-decode-audio-file/
+// https://asawicki.info/news_1385_music_analysis_-_spectrogram.html
 
 #include <Windows.h>
 #include <string>
-#include <iostream>
-#include <fstream>
-#include <vector>
 
-#include <mpg123.h>
+#include "mp3ToPCM.h"
+#include "spectralAnalysis.h"
+#include "window.h"
+#include "kissfft/kiss_fft.h"
 
-class mp3ToPCM {
-private:	
-	std::vector<BYTE> rawPcm;
-
-public:
-	std::string filename;
-	
-	mp3ToPCM(std::string filename) :
-		filename(filename)
-	{
-	
-	}
-
-	// //http://www.cplusplus.com/forum/windows/210933/
-	int loadFile()
-	{
-
-		mpg123_init();
-
-		int err;
-		mpg123_handle *mh = mpg123_new(NULL, &err);
-		size_t buffer_size = mpg123_outblock(mh);
-		unsigned char *buf = (unsigned char*)malloc(buffer_size * sizeof(unsigned char));
-
-		if (mpg123_open(mh, filename.c_str())) {
-			return -1;
-		}
-
-		int channels, encoding;
-		long rate;
-		mpg123_getformat(mh, &rate, &channels, &encoding);
-
-		int m_bits = mpg123_encsize(encoding);
-		int m_rate = rate;
-		int m_channels = channels;
-
-		size_t done = 0;
-		for (int totalBtyes = 0; mpg123_read(mh, buf, buffer_size, &done) == MPG123_OK; )
-		{
-			char* data = new char[done + 1];
-			for (int i = 0; i != done; i++)
-			{
-				this->rawPcm.push_back(static_cast<BYTE>(buf[i]));
-			}
-
-			totalBtyes += done;
-		}
-
-		mpg123_close(mh);
-		mpg123_delete(mh);
-		mpg123_exit();
-
-		return 0;
-	}
-
-private:
-	std::ifstream::pos_type filesize(const char* filename)
-	{
-		std::ifstream in(filename, std::ifstream::ate | std::ifstream::binary);
-		return in.tellg();
-	}
-};
+#define USE_MPG123
+#ifndef USE_MPG123
+#include "ffmpeg_decode.h"
+#endif
 
 int main(void)
 {
+#ifdef USE_MPG123
 	mp3ToPCM rawPCM{ "..\\test.mp3" };
 	if (rawPCM.loadFile()) {
 		std::cout << "[!] Failed to decode into PCM" << std::endl;
 		return -1;
 	}
+
+	double* pcmBuf = NULL;
+	rawPCM.getFpuBuf(&pcmBuf);
+#else
+#endif
 
 	return 0;
 }

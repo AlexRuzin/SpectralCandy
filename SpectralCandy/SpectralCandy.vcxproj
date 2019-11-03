@@ -123,7 +123,18 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="..\..\..\github.com\kissfft\kiss_fft.c" />
     <ClCompile Include="main.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="..\..\..\github.com\kissfft\kissfft.hh" />
+    <ClInclude Include="..\..\..\github.com\kissfft\kissfft_i32.hh" />
+    <ClInclude Include="..\..\..\github.com\kissfft\kiss_fft.h" />
+    <ClInclude Include="..\..\..\github.com\kissfft\_kiss_fft_guts.h" />
+    <ClInclude Include="ffmpeg_decode.h" />
+    <ClInclude Include="mp3ToPCM.h" />
+    <ClInclude Include="spectralAnalysis.h" />
+    <ClInclude Include="window.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
