@@ -27,6 +27,9 @@ int main(void)
 
 	double* pcmBuf = NULL;
 	rawPCM.getFpuBuf(&pcmBuf);
+
+	double* wBuf = NULL;
+	rawPCM.processWindow(pcmBuf, &wBuf, rawPCM.getSize());
 #else
 #endif
 

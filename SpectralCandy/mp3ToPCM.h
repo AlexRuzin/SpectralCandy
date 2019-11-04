@@ -1,5 +1,8 @@
 #pragma once
 
+#define _USE_MATH_DEFINES
+#include <cmath>
+
 #include <mpg123.h>
 #include <vector>
 #include <string>
@@ -48,7 +51,7 @@ public:
 		int m_channels = channels;
 
 		size_t done = 0;
-		for (int totalBtyes = 0; mpg123_read(mh, buf, buffer_size, &done) == MPG123_OK; )
+		for (size_t totalBtyes = 0; mpg123_read(mh, buf, buffer_size, &done) == MPG123_OK; )
 		{
 			rawPcm.resize(rawPcm.size() + buffer_size);
 
@@ -78,6 +81,23 @@ public:
 			short lSample = *(const short*)buf;
 			short rSample = *(const short*)(buf + 2);
 			*oPtr = ((double)lSample + (double)rSample) / 65536.f;
+		}
+	}
+
+	size_t getSize()
+	{
+		return (size_t)rawPcm.size();
+	}
+
+	void processWindow(__in const double* in, __out double** out, size_t len)
+	{
+		*out = (double*)malloc(sizeof(double) * len);
+
+		float pi = atan(1) * 4;
+
+		for (int i = 0; i < 2048; i++) {
+			double multiplier = 0.5 * (1 - cos(2 * pi * i / 2047));
+			(*out)[i] = multiplier * in[i];
 		}
 	}
 
