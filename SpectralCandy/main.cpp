@@ -16,6 +16,8 @@
 #include "ffmpeg_decode.h"
 #endif
 
+const size_t sampleSize = 4096;
+
 int main(void)
 {
 #ifdef USE_MPG123
@@ -25,13 +27,11 @@ int main(void)
 		return -1;
 	}
 
-	double* pcmBuf = NULL;
-	rawPCM.getFpuBuf(&pcmBuf);
-
-	double* wBuf = NULL;
-	rawPCM.processWindow(pcmBuf, &wBuf, rawPCM.getSize());
 #else
 #endif
+
+	spectralAnalysis spec{ rawPCM.getBuf(), sampleSize };
+	spec.processSamples();
 
 	return 0;
 }

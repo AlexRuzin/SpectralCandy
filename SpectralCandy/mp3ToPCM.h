@@ -71,34 +71,14 @@ public:
 		return 0;
 	}
 
-	void getFpuBuf(double** out)
+	const std::vector<BYTE>& getBuf(void)
 	{
-		BYTE* buf = static_cast<BYTE*>(&rawPcm[0]);
-		*out = (double*)malloc(sizeof(double) * rawPcm.size());
-		double* oPtr = *out;
-
-		for (unsigned int i = 0; i < rawPcm.size() / 4; i++, buf += 4, ++oPtr) {
-			short lSample = *(const short*)buf;
-			short rSample = *(const short*)(buf + 2);
-			*oPtr = ((double)lSample + (double)rSample) / 65536.f;
-		}
+		return this->rawPcm;
 	}
 
-	size_t getSize()
+	size_t getSize(void)
 	{
 		return (size_t)rawPcm.size();
-	}
-
-	void processWindow(__in const double* in, __out double** out, size_t len)
-	{
-		*out = (double*)malloc(sizeof(double) * len);
-
-		float pi = atan(1) * 4;
-
-		for (int i = 0; i < 2048; i++) {
-			double multiplier = 0.5 * (1 - cos(2 * pi * i / 2047));
-			(*out)[i] = multiplier * in[i];
-		}
 	}
 
 private:
