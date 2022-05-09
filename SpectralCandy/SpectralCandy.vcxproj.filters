@@ -13,33 +13,15 @@
       <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
       <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
     </Filter>
-    <Filter Include="Header Files\kissfft">
-      <UniqueIdentifier>{a754aeb8-7ea6-4c15-8292-5168a2b6ef7f}</UniqueIdentifier>
-    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\..\github.com\kissfft\kiss_fft.c">
-      <Filter>Header Files\kissfft</Filter>
-    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="spectralAnalysis.h">
       <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\github.com\kissfft\_kiss_fft_guts.h">
-      <Filter>Header Files\kissfft</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\github.com\kissfft\kiss_fft.h">
-      <Filter>Header Files\kissfft</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\github.com\kissfft\kissfft.hh">
-      <Filter>Header Files\kissfft</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\github.com\kissfft\kissfft_i32.hh">
-      <Filter>Header Files\kissfft</Filter>
     </ClInclude>
     <ClInclude Include="window.h">
       <Filter>Header Files</Filter>

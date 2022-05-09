@@ -3,6 +3,7 @@
 #include <assert.h>
 #include <iterator>
 #include <complex>
+#include <vector>
 
 #include "kissfft/kiss_fft.h"
 
@@ -20,7 +21,7 @@ public:
 		sampleSize(sampleSize),
 		pi(atan(1) * 4)
 	{
-		assert(in.size() != 0 && sampleSize != 0);
+		assert(in.size() != 0 && sampleSize != 0); 
 
 		BYTE* buf = const_cast<BYTE*>(&rawBuf[0]);
 		for (unsigned int i = 0; i < in.size() / 4; i++, buf += 4) {
